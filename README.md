@@ -1,139 +1,103 @@
-# Flowchart-Generator
-Automatically creates Flowcharts from Pseudocode!
-<img src="flowchart.png" width="629" height="500">
+START
 
-## Video Demo
+PROMPT USER
 
-https://www.youtube.com/watch?v=1gCqPBzU8Z0
+    "Select user type: (1) Student (2) Lecturer (3) Admin (4) Exit"
+    INPUT userType
 
+    IF userType == 1 THEN
+        // Student login
+        PRINT "Enter your name: "
+        INPUT studentName
+        IF studentName exists in students THEN
+            CALL viewMarks(studentName)
+        ELSE
+            PRINT "Student not found."
+        ENDIF
+        CONTINUE LOOP
 
-## Installing through Repl.it
+    ELSE IF userType == 2 THEN
+        // Lecturer login
+        PRINT "Enter your name: "
+        INPUT lecturerName
 
-If you don't want to download this or setup python, you can run this project directly from your browser with [repl.it](https://repl.it/github/MugilanGN/Flowchart-Generator)
+        IF lecturerName exists in lecturers THEN
+            PRINT "Enter password: "
+            INPUT password
 
-This link will automatically clone the project and set it up for you. If you want to do it manually, you can import **github.com/MugilanGN/Flowchart-Generator** into repl.it yourself.
+            IF password matches lecturers[lecturerName].password THEN
+                LOOP
+                    PRINT "Options: (1) View all marks (2) Modify mark (3) Add student (4) Logout"
+                    INPUT lecturerOption
 
-From here onwards, you can edit the enter.txt file in the repl project and replace it with your own custom pseudocode.
+                    IF lecturerOption == 1 THEN
+                        CALL viewAllMarks(lecturerName)
+                    
+                    ELSE IF lecturerOption == 2 THEN
+                        PRINT "Enter student name: "
+                        INPUT studentName
+                        PRINT "Enter mark: "
+                        INPUT mark
+                        CALL modifyMark(lecturerName, studentName, mark)
 
-Once you are done, you can run the commands from the [CLI Usage](#cli-usage) section of the README in the repl.it terminal.
+                    ELSE IF lecturerOption == 3 THEN
+                        PRINT "Enter student name: "
+                        INPUT studentName
+                        CALL addStudentToLecturer(lecturerName, studentName)
 
-## Local Installation
+                    ELSE IF lecturerOption == 4 THEN
+                        BREAK // Logout
 
-This project was built on Python 3.7.4
+                    ENDIF
+                END LOOP
+            ELSE
+                PRINT "Incorrect password."
+            ENDIF
+        ELSE
+            PRINT "Lecturer not found."
+        ENDIF
+        CONTINUE LOOP
 
-Run this to install the necessary dependencies:
+    ELSE IF userType == 3 THEN
+        // Admin login
+        PRINT "Enter password: "
+        INPUT adminPassword
 
-```sh 
-pip install Pillow==9.0.0 click
-```
+        IF adminPassword matches admin.password THEN
+            LOOP
+                PRINT "Options: (1) Add Lecturer (2) View all marks (3) Add Student (4) Logout"
+                INPUT adminOption
 
-Next, clone this project onto your system.
+                IF adminOption == 1 THEN
+                    PRINT "Enter lecturer name: "
+                    INPUT lecturerName
+                    PRINT "Enter lecturer password: "
+                    INPUT lecturerPassword
+                    PRINT "Enter subject for the lecturer: "
+                    INPUT subject
+                    CALL addLecturer(lecturerName, lecturerPassword, subject)
 
-## Writing the Pseudocode
+                ELSE IF adminOption == 2 THEN
+                    CALL viewAllMarksForAllLecturers()
 
-The Pseudocode is entered into a .txt file. It follows strict rules which must be obeyed
+                ELSE IF adminOption == 3 THEN
+                    PRINT "Enter student name: "
+                    INPUT studentName
+                    CALL addStudent(studentName)
 
-<img src="enter.png" alt="alt text">
+                ELSE IF adminOption == 4 THEN
+                    BREAK // Logout
 
-### Rules
+                ENDIF
+            END LOOP
+        ELSE
+            PRINT "Incorrect password."
+        ENDIF
+        CONTINUE LOOP
 
-STOP and START are automatically input by the program, so do not need to be added
+    ELSE IF userType == 4 THEN
+        PRINT "Exiting..."
+        BREAK
+    ENDIF
+END LOOP
 
-Indents don't affect the program, so nothing has to be indented, and incorrect indentation is allowed
-
-The capitalization of the keywords is extremely important. If an error occurs, double check if you have capitalized the keywords like "TO" and "FOR" properly
-
-ELSE IF is not available, but nested IFs are possible
-
-The ENDIF, NEXT var, and ENDWHILE blocks are mandatory
-
-### Syntax Guide
-
- #### Input and Output:
-
-  - INPUT x 
-  - OUTPUT x
-
-   ```sh
-   INPUT X
-   OUTPUT var
-   OUTPUT "hello"
-   ```
-#### IF statements:
-  - IF condition THEN
-  - ELSE
-  - ENDIF
-  
-  ```sh
-  IF x < 3 THEN
-    OUTPUT X
-  ELSE
-    OUTPUT x*2
-  ENDIF
-  ```
-  The else statement is optional (ENDIF is still necessary)
-  
-   ```sh
-  IF x < 3 THEN
-    OUTPUT X
-  ENDIF
-  ```
-  
-  #### Process-type blocks:
-
-  ```sh
-  x = x + 1
-  y = x / 2
-  ```
-  
-  #### While loops:
-
-  - WHILE condition DO
-  - ENDWHILE
-  
-  ```sh
-  WHILE x < 5 DO
-    OUTPUT x
-  ENDWHILE
-  ```
-  #### For loops:
-   
-  - FOR var <- start TO end
-  - NEXT var
-  
-  ```sh
-  FOR i <- 1 TO 5
-    OUTPUT i
-  NEXT i
-  ```
-
-## CLI usage
-
-To run the code, simply execute the following command:
-```sh
-python Converter.py
-```
-
-### Arguments
-  
-  Arguments in the CLI are typed like so: ```--size=20``` or ```--code="enter.txt"```
- 
-  - ```--size``` is the font size used. This controls the size of the entire flowchart as well. By default it is 20px
-  - ```--font``` is the font path. A default NotoSans font is used at "./fonts/", but can be changed for different OSs or fonts
-  - ```--output``` is the flowchart's image file. Default is "flowchart.png"
-  - ```--code``` is the file with the pseudocode. Defaults to "enter.txt"
-  - ```--help``` provides CLI help
-  
-  For example:
-  
-  ```sh
-  python Converter.py --code="code.txt" --size=30 --output="result.png"
-  ```
-
-### Flowchart Image
-
-This image contains the created flowchart which can be shared, printed, etc. Its size varies exactly on the size of the flowchart created, so it may even hit a resolution of 10k pixels! However if the generated flowchart is too big, then the image will be unopenable due to being too large. The user should be careful with flowchart sizes.
-
-## Support
-
-If you are having issues, please let me know. You can contact me at mugi.ganesan@gmail.com
